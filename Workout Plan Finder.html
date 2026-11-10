@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find your workout plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Cairo:wght@500;700&display=swap">
+<style>
+:root{--bg:#e9ece6;--card:#f6f7f3;--ink:#162126;--mut:#5b6b70;--line:#c9cfc6;--acc:#2347d9;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191b;--card:#1d2427;--ink:#eef1ec;--mut:#9aa7ab;--line:#344044;--acc:#7f9bff;--on:#0d1320}}
+:root[data-theme="dark"]{--bg:#14191b;--card:#1d2427;--ink:#eef1ec;--mut:#9aa7ab;--line:#344044;--acc:#7f9bff;--on:#0d1320}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 Barlow,"Helvetica Neue",Arial,sans-serif}
+[lang=ar] body{font-family:Cairo,Tahoma,Arial,sans-serif;line-height:1.75}
+.wrap{max-width:760px;margin:0 auto;padding:20px 18px 64px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.brand{font:700 20px/1 "Barlow Condensed",Impact,sans-serif;letter-spacing:.04em}
+[lang=ar] .brand{font-family:Cairo,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+#lang{background:none;border:1.5px solid var(--ink);border-radius:6px;padding:6px 14px;font-weight:600}
+h1,h2,.big{font-family:"Barlow Condensed",Impact,"Arial Narrow",sans-serif;font-weight:700;line-height:.98;margin:0}
+[lang=ar] h1,[lang=ar] h2,[lang=ar] .big{font-family:Cairo,sans-serif;line-height:1.25}
+h1{font-size:clamp(44px,10vw,76px);max-width:11em}
+.sub{color:var(--mut);max-width:34em;margin:14px 0 30px}
+.q{margin:0 0 22px;padding:0;border:0}
+.q legend{font-weight:600;margin-bottom:8px;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:9px 16px;min-height:44px}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--on);font-weight:600}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hint{border:1.5px dashed var(--line);border-radius:10px;padding:22px;color:var(--mut)}
+.res{background:var(--card);border:1.5px solid var(--ink);border-radius:12px;padding:24px 20px}
+.big{font-size:clamp(38px,9vw,60px)}
+.meta{color:var(--mut);margin:6px 0 0}
+.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:22px 0 8px}
+.strip div{height:34px;border-radius:5px;border:1.5px solid var(--line)}
+.strip .on{background:var(--acc);border-color:var(--acc)}
+.sl{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:13px;color:var(--mut);text-align:center;margin-bottom:18px}
+.days{margin:0;padding:0;list-style:none}
+.days li{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.dn{color:var(--mut);font-weight:600}
+.days .t{border-inline-start:5px solid var(--acc);padding-inline-start:12px;margin-inline-start:-17px}
+.days .t .dn{color:var(--ink)}
+.sn{font:700 24px/1.1 "Barlow Condensed",sans-serif}
+[lang=ar] .sn{font-family:Cairo,sans-serif}
+.sm{color:var(--mut);font-size:15px}
+.rest{color:var(--mut)}
+.box{margin-top:20px;padding-top:16px;border-top:1.5px solid var(--ink)}
+.box h3{margin:0 0 6px;font-size:18px}
+.box p{margin:0 0 10px;max-width:40em}
+.cap{background:var(--bg);border-radius:8px;padding:10px 14px;margin-top:16px;font-size:15px}
+h2{font-size:38px;margin:48px 0 14px}
+.all{display:grid;gap:8px}
+.all div{border:1.5px solid var(--line);border-radius:10px;padding:12px 16px;background:var(--card)}
+.all .me{border-color:var(--acc);box-shadow:inset 4px 0 0 var(--acc)}
+[dir=rtl] .all .me{box-shadow:inset -4px 0 0 var(--acc)}
+.all b{font-size:18px}
+.all span{display:block;color:var(--mut);font-size:15px}
+@media(max-width:480px){.days li{grid-template-columns:70px 1fr}.days .t{margin-inline-start:-17px}}
+@media(prefers-reduced-motion:no-preference){.res{animation:in .3s ease}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div class="brand" id="brand"></div><button id="lang" type="button"></button></div>
+<h1 id="h1"></h1>
+<p class="sub" id="sub"></p>
+<div id="quiz"></div>
+<div id="out" aria-live="polite"></div>
+<h2 id="h2"></h2>
+<div class="all" id="all"></div>
+</div>
+<script>
+var lang="en",pick={goal:null,level:null,days:null};
+var DAYS={en:["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],ar:["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"]};
+var PAT={2:[0,3],3:[0,2,4],4:[0,1,3,4],5:[0,1,2,4,5],6:[0,1,2,3,4,5]};
+var U={
+en:{brand:"Plan Finder",tog:"العربية",h1:"Find the gym plan that fits you",sub:"Answer three quick questions. You get one training split and a full week laid out day by day.",
+q1:"What is your main goal?",q2:"How much gym experience do you have?",q3:"How many days a week can you train?",
+goal:{muscle:"Build muscle",fat:"Lose fat",strength:"Get stronger"},level:{beg:"Beginner (under 6 months)",int:"Intermediate (6 months–2 years)",adv:"Advanced (2+ years)"},
+dl:function(n){return n+" days"},hint:"Pick a goal, your level and your days to see your plan.",
+yours:"Your recommended split",per:function(n){return n+" training days a week"},why:"Why this split",how:"How to train",lvl:"At your level",rest:"Rest",
+week:"Your week",allh:"All five splits",best:"Best for",
+cap:"You picked more days than your level or goal needs. Your plan uses fewer days so you recover and keep progressing. Add extra days later."},
+ar:{brand:"دليل الخطة",tog:"English",h1:"اعرف خطة الجيم المناسبة لك",sub:"جاوب على ثلاث أسئلة سريعة. هتاخد تقسيم تمرين واحد وجدول أسبوع كامل يوم بيوم.",
+q1:"إيه هدفك الأساسي؟",q2:"خبرتك في الجيم قد إيه؟",q3:"تقدر تتمرن كام يوم في الأسبوع؟",
+goal:{muscle:"بناء العضل",fat:"حرق الدهون",strength:"زيادة القوة"},level:{beg:"مبتدئ (أقل من 6 شهور)",int:"متوسط (6 شهور–سنتين)",adv:"متقدم (أكتر من سنتين)"},
+dl:function(n){return n+(n<11?" أيام":" يوم")},hint:"اختار هدفك ومستواك وعدد الأيام عشان تشوف خطتك.",
+yours:"التقسيم المناسب ليك",per:function(n){return n+" أيام تمرين في الأسبوع"},why:"ليه التقسيم ده",how:"إزاي تتمرن",lvl:"لمستواك",rest:"راحة",
+week:"أسبوعك",allh:"التقسيمات الخمسة",best:"الأفضل لـ",
+cap:"اخترت أيام أكتر مما يحتاجه مستواك أو هدفك. الخطة بتستخدم أيام أقل عشان جسمك يرتاح ويتطور. زوّد الأيام بعدين."}};
+var SP={
+full:{n:["Full Body Split","تقسيم الجسم الكامل"],f:["2–3 days","2–3 أيام"],d:["Every session trains your whole body, so you practice each main lift often. The fastest way to learn the basics.","كل تمرينة بتشتغل على الجسم كله، فبتتدرب على الحركات الأساسية كتير. أسرع طريقة تتعلم بيها الأساسيات."],b:["Beginners and busy weeks","المبتدئين والأسابيع المزدحمة"]},
+ul:{n:["Upper / Lower Split","تقسيم علوي / سفلي"],f:["4 days","4 أيام"],d:["Upper body one day, lower body the next. Each muscle gets trained twice a week with enough rest between.","جزء علوي يوم وسفلي يوم. كل عضلة بتتمرن مرتين في الأسبوع مع راحة كافية."],b:["Strength and steady progress","القوة والتطور المستمر"]},
+ppl:{n:["Push / Pull / Legs (PPL)","دفع / سحب / رجل (PPL)"],f:["3 or 6 days","3 أو 6 أيام"],d:["Pushing muscles, pulling muscles and legs each get their own day. Run it once a week for 3 days, or twice for 6.","عضلات الدفع وعضلات السحب والرجل، كل مجموعة ليها يومها. تعملها مرة في الأسبوع (3 أيام) أو مرتين (6 أيام)."],b:["Muscle building with a flexible schedule","بناء العضل بجدول مرن"]},
+bro:{n:["Bro Split / Body Part Split","تقسيم عضلة في اليوم"],f:["5 days","5 أيام"],d:["One muscle group per day with lots of volume. Each muscle trains once a week, so it suits people who recover well.","عضلة واحدة كل يوم بحجم تمرين كبير. كل عضلة بتتمرن مرة في الأسبوع، فمناسب للي بيتعافى كويس."],b:["Experienced lifters chasing size","المتمرنين أصحاب الخبرة اللي عايزين حجم"]},
+arnold:{n:["Arnold Split","تقسيم أرنولد"],f:["6 days","6 أيام"],d:["Chest and back, shoulders and arms, then legs, repeated twice a week. High volume that needs good recovery.","صدر وظهر، ثم أكتاف وذراعين، ثم رجل، وتتكرر مرتين في الأسبوع. حجم عالي ومحتاج تعافي جيد."],b:["Advanced lifters with 6 days","المتقدمين اللي عندهم 6 أيام"]}};
+var SS={
+fbA:["Full body A","جسم كامل أ","Squat, bench press, row, plank","سكوات، بنش بريس، سحب، بلانك"],
+fbB:["Full body B","جسم كامل ب","Deadlift, overhead press, lat pulldown, lunges","ديدلفت، ضغط كتف، سحب علوي، لانجز"],
+fbC:["Full body C","جسم كامل ج","Leg press, incline press, cable row, arms","ليج برس، ضغط مائل، سحب كابل، ذراعين"],
+up:["Upper body","الجزء العلوي","Chest, back, shoulders, arms","صدر، ظهر، أكتاف، ذراعين"],
+low:["Lower body","الجزء السفلي","Quads, hamstrings, glutes, calves","فخذ أمامي وخلفي، مؤخرة، سمانة"],
+push:["Push","دفع","Chest, shoulders, triceps","صدر، أكتاف، تراي"],
+pull:["Pull","سحب","Back, rear shoulders, biceps","ظهر، أكتاف خلفية، باي"],
+legs:["Legs","رجل","Quads, hamstrings, glutes, calves","فخذ أمامي وخلفي، مؤخرة، سمانة"],
+chest:["Chest","صدر","Bench, incline press, flyes","بنش، ضغط مائل، فلاي"],
+back:["Back","ظهر","Rows, pulldowns, deadlift","سحب، لات، ديدلفت"],
+shoulders:["Shoulders","أكتاف","Presses, lateral raises, rear delts","ضغط، رفرفة جانبية، أكتاف خلفية"],
+arms:["Arms","ذراعين","Biceps and triceps","باي وتراي"],
+cb:["Chest + back","صدر + ظهر","Presses, rows, pull-ups","ضغط، سحب، عقلة"],
+sa:["Shoulders + arms","أكتاف + ذراعين","Presses, raises, curls, extensions","ضغط، رفرفة، باي، تراي"],
+cardio:["Cardio + mobility","كارديو + مرونة","30–40 min brisk walk, bike or swim, then stretching","30–40 دقيقة مشي سريع أو عجلة أو سباحة، ثم إطالة"]};
+var GT={
+muscle:["Train most sets at 8–12 reps, 3–4 sets per exercise, resting 60–90 seconds. Add a little weight or one rep each week.","اعمل أغلب المجموعات 8–12 عدّة، 3–4 مجموعات لكل تمرين، وراحة 60–90 ثانية. زوّد وزن بسيط أو عدّة كل أسبوع."],
+fat:["Lift at 8–15 reps to keep your muscle, walk 8,000–10,000 steps a day, and keep a small calorie deficit with plenty of protein.","ارفع 8–15 عدّة عشان تحافظ على العضل، وامشي 8,000–10,000 خطوة في اليوم، وخلي العجز في السعرات بسيط مع بروتين كفاية."],
+strength:["Focus on heavy compound lifts (squat, bench, deadlift, press) at 3–6 reps, resting 2–3 minutes. Log every session.","ركّز على التمارين المركبة التقيلة (سكوات، بنش، ديدلفت، ضغط كتف) 3–6 عدّات، وراحة 2–3 دقايق. سجّل كل تمرينة."]};
+var LT={
+beg:["Start light, learn the form first and stop each set with 2–3 reps left. Progress comes faster from consistency than from heavy weights.","ابدأ بوزن خفيف، اتعلم الأداء الصح الأول، وخلّي 2–3 عدّات في الخزان آخر كل مجموعة. الاستمرار بيديك نتيجة أسرع من الأوزان التقيلة."],
+int:["Track your lifts and add load on a schedule. Plan an easier week every 6–8 weeks.","سجّل تمارينك وزوّد الأوزان بشكل منظم. خد أسبوع أخف كل 6–8 أسابيع."],
+adv:["Push the last sets close to failure on isolation lifts and rotate exercises every 8–12 weeks. Sleep and food decide your results.","اقرب من الفشل العضلي في آخر المجموعات بتمارين العزل، وغيّر التمارين كل 8–12 أسبوع. النوم والأكل هما اللي بيحددوا نتيجتك."]};
+var WHY={
+full:["With 2–3 days, training the whole body each time gives every muscle enough frequency. It is also simple to follow.","مع 2–3 أيام، تمرين الجسم كله كل مرة بيدي كل عضلة تكرار كافي. وكمان سهل تلتزم بيه."],
+ul:["With 4 days, alternating upper and lower hits every muscle twice a week and keeps recovery balanced.","مع 4 أيام، التبديل بين علوي وسفلي بيشغّل كل عضلة مرتين في الأسبوع ويوازن التعافي."],
+ppl:["Your days and goal fit a push, pull, legs rotation. It spreads the work so no muscle is overloaded.","أيامك وهدفك مناسبين لدورة دفع وسحب ورجل. بتوزّع الشغل فمفيش عضلة بتتحمل زيادة."],
+bro:["With 5 days and solid experience, a dedicated day per muscle lets you add high volume to each.","مع 5 أيام وخبرة كويسة، يوم مخصص لكل عضلة بيسمحلك تعمل حجم تمرين عالي."],
+arnold:["With 6 days and years of training behind you, this split pairs muscles well and hits each one twice a week.","مع 6 أيام وسنين تمرين، التقسيم ده بيجمع العضلات صح وبيشغّل كل واحدة مرتين في الأسبوع."]};
+function build(g,l,d){var cap=false;
+if(l==="beg"&&d>4){d=4;cap=true}
+if(g==="strength"&&d>4){d=4;cap=true}
+var s,q;
+if(d<=2){s="full";q=["fbA","fbB"]}
+else if(d===3){if(g==="muscle"&&l!=="beg"){s="ppl";q=["push","pull","legs"]}else{s="full";q=["fbA","fbB","fbC"]}}
+else if(d===4){s="ul";q=["up","low","up","low"]}
+else if(d===5){if(g==="muscle"&&l==="adv"){s="bro";q=["chest","back","shoulders","legs","arms"]}else{s="ul";q=["up","low","cardio","up","low"]}}
+else{if(g==="muscle"&&l==="adv"){s="arnold";q=["cb","sa","legs","cb","sa","legs"]}else{s="ppl";q=["push","pull","legs","push","pull","legs"]}}
+return{s:s,q:q,d:d,cap:cap}}
+function chips(k,o){return Object.keys(o).map(function(v){return '<button type="button" class="chip" data-k="'+k+'" data-v="'+v+'" aria-pressed="'+(String(pick[k])===v)+'">'+o[v]+'</button>'}).join("")}
+function render(){var i=lang==="en"?0:1,T=U[lang],h=document.documentElement;
+h.lang=lang;h.dir=lang==="ar"?"rtl":"ltr";
+document.title=T.h1;
+document.getElementById("brand").textContent=T.brand;
+document.getElementById("lang").textContent=T.tog;
+document.getElementById("h1").textContent=T.h1;
+document.getElementById("sub").textContent=T.sub;
+var dl={};[2,3,4,5,6].forEach(function(n){dl[n]=T.dl(n)});
+document.getElementById("quiz").innerHTML=
+'<fieldset class="q"><legend>'+T.q1+'</legend><div class="chips">'+chips("goal",T.goal)+'</div></fieldset>'+
+'<fieldset class="q"><legend>'+T.q2+'</legend><div class="chips">'+chips("level",T.level)+'</div></fieldset>'+
+'<fieldset class="q"><legend>'+T.q3+'</legend><div class="chips">'+chips("days",dl)+'</div></fieldset>';
+var out=document.getElementById("out");
+if(!pick.goal||!pick.level||!pick.days){out.innerHTML='<div class="hint">'+T.hint+'</div>';var cur=null}
+else{var p=build(pick.goal,pick.level,+pick.days),sp=SP[p.s],pat=PAT[p.d],cur=p.s;
+var strip="",lab="",list="";
+for(var n=0;n<7;n++){var k=pat.indexOf(n),on=k>-1;
+strip+='<div class="'+(on?"on":"")+'"></div>';lab+='<span>'+(lang==="en"?DAYS.en[n]:["سبت","أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة"][n])+'</span>';
+if(on){var ss=SS[p.q[k]];list+='<li class="t"><span class="dn">'+DAYS[lang][n]+'</span><span><span class="sn">'+ss[i]+'</span><br><span class="sm">'+ss[2+i]+'</span></span></li>'}
+else list+='<li><span class="dn">'+DAYS[lang][n]+'</span><span class="rest">'+T.rest+'</span></li>'}
+out.innerHTML='<div class="res"><div class="sm">'+T.yours+'</div><div class="big">'+sp.n[i]+'</div><p class="meta">'+T.per(p.d)+'</p>'+
+'<div class="strip" aria-hidden="true">'+strip+'</div><div class="sl" aria-hidden="true">'+lab+'</div>'+
+'<ul class="days" aria-label="'+T.week+'">'+list+'</ul>'+
+'<div class="box"><h3>'+T.why+'</h3><p>'+WHY[p.s][i]+'</p></div>'+
+'<div class="box"><h3>'+T.how+'</h3><p>'+GT[pick.goal][i]+'</p></div>'+
+'<div class="box"><h3>'+T.lvl+'</h3><p>'+LT[pick.level][i]+'</p></div>'+
+(p.cap?'<div class="cap">'+T.cap+'</div>':'')+'</div>'}
+document.getElementById("h2").textContent=T.allh;
+document.getElementById("all").innerHTML=Object.keys(SP).map(function(k){var s=SP[k];
+return '<div class="'+(k===cur?"me":"")+'"><b>'+s.n[i]+'</b> <span>'+s.f[i]+' · '+T.best+': '+s.b[i]+'</span><span>'+s.d[i]+'</span></div>'}).join("")}
+document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
+if(b.id==="lang"){lang=lang==="en"?"ar":"en";render();return}
+if(b.dataset.k){pick[b.dataset.k]=b.dataset.v;render();var f=document.querySelector('[data-k="'+b.dataset.k+'"][data-v="'+b.dataset.v+'"]');if(f)f.focus()}});
+render();
+</script>
+</body>
+</html>
